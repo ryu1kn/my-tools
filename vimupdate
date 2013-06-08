@@ -1,0 +1,50 @@
+#!/home/ryuichi/bin/swipl -q -t prolog,halt -s
+% vi: ft=prolog
+% OPTIONS:
+%   -h          print usage
+%   -r <rev>    revision
+:- use_module(library(optparse)).
+:- use_module(library(error)).
+
+optSpec([[
+    opt(revision),
+    type(atom),
+    shortflags([r]),
+    longflags(['revision']),
+    help(['revision to which you want your vim upgraded'])
+], [
+    opt(quiet),
+    type(boolean),
+    shortflags([q])
+], [
+    opt(toplevelGoal),
+    type(atom),
+    shortflags([t])
+], [
+    opt(script),
+    type(atom),
+    shortflags([s])
+]]).
+
+prolog :-
+    current_prolog_flag(argv, Argv),
+    optSpec(OptsSpec),
+    opt_parse(OptsSpec, Argv, ParsedOpts, _),
+    member(revision(X), ParsedOpts),
+    atom(X),        % if X is not an atom, it will SILENTLY fail (NG)
+    updateLocalRepository(X),
+    configure,
+    makeInstall,
+    nl.
+
+updateLocalRepository(X) :-
+    atom_concat('echo hg update -r ', X, Cmd),
+    shell(Cmd, 0).
+
+configure :-
+    shell('echo ./configure --with-features=normal --enable-gui=gtk2 --with-x --enable-multibyte --enable-rubyinterp --enable-luainterp', 0).
+
+makeInstall :-
+    shell('echo make', 0),
+    shell('echo sudo make install', 0).
+
