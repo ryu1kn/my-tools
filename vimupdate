@@ -1,10 +1,8 @@
 #!/home/ryuichi/bin/swipl -q -t prolog,halt -s
 % vi: ft=prolog
 % OPTIONS:
-%   -h          print usage
 %   -r <rev>    revision
 :- use_module(library(optparse)).
-:- use_module(library(error)).
 
 optSpec([[
     opt(revision),
@@ -27,15 +25,23 @@ optSpec([[
 ]]).
 
 prolog :-
-    current_prolog_flag(argv, Argv),
-    optSpec(OptsSpec),
-    opt_parse(OptsSpec, Argv, ParsedOpts, _),
-    member(revision(X), ParsedOpts),
-    atom(X),        % if X is not an atom, it will SILENTLY fail (NG)
+    catch(body, E,
+        ( print_message(error, E),
+          fail
+        )).
+
+body :-
+    getArg(revision(X)),
     updateLocalRepository(X),
     configure,
     makeInstall,
     nl.
+
+getArg(Term) :-
+    current_prolog_flag(argv, Argv),
+    optSpec(OptsSpec),
+    opt_parse(OptsSpec, Argv, ParsedOpts, _),
+    member(Term, ParsedOpts).
 
 updateLocalRepository(X) :-
     atom_concat('echo hg update -r ', X, Cmd),
