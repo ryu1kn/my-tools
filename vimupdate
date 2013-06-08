@@ -3,10 +3,12 @@
 % OPTIONS:
 %   -r <rev>    revision
 :- use_module(library(optparse)).
+:- use_module(library(process)).
+:- use_module(library(error)).
 
 optSpec([[
     opt(revision),
-    type(atom),
+    type(integer),
     shortflags([r]),
     longflags(['revision']),
     help(['revision to which you want your vim upgraded'])
@@ -44,13 +46,17 @@ getArg(Term) :-
     member(Term, ParsedOpts).
 
 updateLocalRepository(X) :-
-    atom_concat('echo hg update -r ', X, Cmd),
-    shell(Cmd, 0).
+    must_be(positive_integer, X),
+    process_create(path(echo), ['hg', 'update', '-r', X], []).
 
 configure :-
-    shell('echo ./configure --with-features=normal --enable-gui=gtk2 --with-x --enable-multibyte --enable-rubyinterp --enable-luainterp', 0).
+    process_create(path(echo), [
+            './configure', '--with-features=normal', '--enable-gui=gtk2',
+            '--with-x', '--enable-multibyte', '--enable-rubyinterp',
+            '--enable-luainterp'
+        ], []).
 
 makeInstall :-
-    shell('echo make', 0),
-    shell('echo sudo make install', 0).
+    process_create(path(echo), ['make'], []),
+    process_create(path(echo), ['sudo', 'make', 'install'], []).
 
