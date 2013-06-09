@@ -50,13 +50,26 @@ updateLocalRepository(X) :-
     process_create(path(echo), ['hg', 'update', '-r', X], []).
 
 configure :-
-    process_create(path(echo), [
-            './configure', '--with-features=normal', '--enable-gui=gtk2',
-            '--with-x', '--enable-multibyte', '--enable-rubyinterp',
-            '--enable-luainterp'
-        ], []).
+    machineType(MT),
+    findall(Config, buildConfig(MT, Config), Configs),
+    process_create(path(echo), Configs, []).
+
+machineType(M) :-
+    current_prolog_flag(arch, Arch),
+    ( sub_atom(Arch, _, _, _, 'darwin') -> M = mac ; M = unix ), !.
 
 makeInstall :-
     process_create(path(echo), ['make'], []),
     process_create(path(echo), ['sudo', 'make', 'install'], []).
 
+buildConfig(_,    './configure').
+buildConfig(_,    '--with-features=normal').
+buildConfig(_,    '--enable-luainterp').
+buildConfig(_,    '--enable-rubyinterp').
+buildConfig(_,    '--enable-multibyte').
+
+buildConfig(unix, '--enable-gui=gtk2').
+buildConfig(unix, '--with-x').
+
+buildConfig(mac,  '--prefix=`brew --prefix`').
+buildConfig(mac,  '--disable-gui').
