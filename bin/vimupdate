@@ -36,6 +36,7 @@ body :-
     getArg(revision(X)),
     goToVimDir,
     updateLocalRepository(X),
+    removeConfigCache,
     configure,
     makeInstall,
     nl.
@@ -54,6 +55,9 @@ goToVimDir :-
 updateLocalRepository(X) :-
     must_be(positive_integer, X),
     process_create(path(hg), ['update', '-r', X], []).
+
+removeConfigCache :-
+    process_create(path(rm), ['src/auto/config.cache'], []).
 
 configure :-
     machineType(MT),
