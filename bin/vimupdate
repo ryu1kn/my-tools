@@ -34,6 +34,7 @@ prolog :-
 
 body :-
     getArg(revision(X)),
+    goToVimDir,
     updateLocalRepository(X),
     configure,
     makeInstall,
@@ -44,6 +45,11 @@ getArg(Term) :-
     optSpec(OptsSpec),
     opt_parse(OptsSpec, Argv, ParsedOpts, _),
     member(Term, ParsedOpts).
+
+goToVimDir :-
+    getenv('HOME', HOME),
+    atomic_list_concat([HOME, repos, vim73], /, Path),
+    working_directory(_, Path).
 
 updateLocalRepository(X) :-
     must_be(positive_integer, X),
