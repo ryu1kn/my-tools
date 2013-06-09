@@ -6,7 +6,7 @@
 :- use_module(library(process)).
 :- use_module(library(error)).
 
-optSpec([[
+opt_spec([[
     opt(revision),
     type(integer),
     shortflags([r]),
@@ -34,54 +34,54 @@ prolog :-
 
 body :-
     getArg(revision(X)),
-    goToVimDir,
-    updateLocalRepository(X),
-    removeConfigCache,
+    goto_vim_dir,
+    update_local_repo(X),
+    remove_config_cache,
     configure,
-    makeInstall,
+    make_install,
     nl.
 
 getArg(Term) :-
     current_prolog_flag(argv, Argv),
-    optSpec(OptsSpec),
+    opt_spec(OptsSpec),
     opt_parse(OptsSpec, Argv, ParsedOpts, _),
     member(Term, ParsedOpts).
 
-goToVimDir :-
+goto_vim_dir :-
     getenv('HOME', HOME),
     atomic_list_concat([HOME, repos, vim73], /, Path),
     working_directory(_, Path).
 
-updateLocalRepository(X) :-
+update_local_repo(X) :-
     must_be(positive_integer, X),
     process_create(path(hg), ['update', '-r', X], []).
 
-removeConfigCache :-
+remove_config_cache :-
     process_create(path(rm), ['src/auto/config.cache'], []).
 
 configure :-
-    machineType(MT),
-    findall(Config, buildConfig(MT, Config), Configs),
+    machine_type(MT),
+    findall(Config, buildconfig(MT, Config), Configs),
     process_create(configure, Configs, []).
 
-machineType(M) :-
+machine_type(M) :-
     current_prolog_flag(arch, Arch),
     ( sub_atom(Arch, _, _, _, 'darwin') -> M = mac ; M = unix ), !.
 
-makeInstall :-
+make_install :-
     process_create(path(make), [], []),
     process_create(path(sudo), ['make', 'install'], []).
 
-buildConfig(_,    '--with-features=normal').
-buildConfig(_,    '--enable-luainterp').
-buildConfig(_,    '--enable-rubyinterp').
-buildConfig(_,    '--enable-multibyte').
+buildconfig(_,    '--with-features=normal').
+buildconfig(_,    '--enable-luainterp').
+buildconfig(_,    '--enable-rubyinterp').
+buildconfig(_,    '--enable-multibyte').
 
-buildConfig(unix, '--enable-gui=gtk2').
-buildConfig(unix, '--with-x').
+buildconfig(unix, '--enable-gui=gtk2').
+buildconfig(unix, '--with-x').
 
-buildConfig(mac,  '--disable-gui').
-buildConfig(mac,  Prefix) :-
+buildconfig(mac,  '--disable-gui').
+buildconfig(mac,  Prefix) :-
     process_create(path(brew), ['--prefix'], [stdout(pipe(Out))]),
     read_line_to_codes(Out, Codes),
     atom_chars(PrefixAtom, Codes),
