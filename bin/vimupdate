@@ -53,22 +53,21 @@ goToVimDir :-
 
 updateLocalRepository(X) :-
     must_be(positive_integer, X),
-    process_create(path(echo), ['hg', 'update', '-r', X], []).
+    process_create(path(hg), ['update', '-r', X], []).
 
 configure :-
     machineType(MT),
     findall(Config, buildConfig(MT, Config), Configs),
-    process_create(path(echo), Configs, []).
+    process_create(configure, Configs, []).
 
 machineType(M) :-
     current_prolog_flag(arch, Arch),
     ( sub_atom(Arch, _, _, _, 'darwin') -> M = mac ; M = unix ), !.
 
 makeInstall :-
-    process_create(path(echo), ['make'], []),
-    process_create(path(echo), ['sudo', 'make', 'install'], []).
+    process_create(path(make), [], []),
+    process_create(path(sudo), ['make', 'install'], []).
 
-buildConfig(_,    './configure').
 buildConfig(_,    '--with-features=normal').
 buildConfig(_,    '--enable-luainterp').
 buildConfig(_,    '--enable-rubyinterp').
@@ -77,5 +76,9 @@ buildConfig(_,    '--enable-multibyte').
 buildConfig(unix, '--enable-gui=gtk2').
 buildConfig(unix, '--with-x').
 
-buildConfig(mac,  '--prefix=`brew --prefix`').
 buildConfig(mac,  '--disable-gui').
+buildConfig(mac,  Prefix) :-
+    process_create(path(brew), ['--prefix'], [stdout(pipe(Out))]),
+    read_line_to_codes(Out, Codes),
+    atom_chars(PrefixAtom, Codes),
+    atomic_concat('--prefix=', PrefixAtom, Prefix).
