@@ -1,4 +1,4 @@
-#!/home/ryuichi/bin/swipl -q -t prolog,halt -s
+#!/usr/local/bin/swipl -q -t prolog,halt -s
 % vi: ft=prolog
 % OPTIONS:
 %   -r <rev>    revision
