@@ -41,6 +41,7 @@ body :-
     make_install,
     nl.
 
+%! @param {Term}
 getArg(Term) :-
     current_prolog_flag(argv, Argv),
     opt_spec(OptsSpec),
@@ -57,7 +58,7 @@ update_local_repo(X) :-
     process_create(path(hg), ['update', '-r', X], []).
 
 remove_config_cache :-
-    process_create(path(rm), ['src/auto/config.cache'], []).
+    process_create(path(rm), ['-f', 'src/auto/config.cache'], []).
 
 configure :-
     machine_type(MT),
@@ -73,8 +74,9 @@ make_install :-
     process_create(path(sudo), ['make', 'install'], []).
 
 buildconfig(_,    '--with-features=normal').
-buildconfig(_,    '--enable-luainterp').
 buildconfig(_,    '--enable-rubyinterp').
+buildconfig(_,    '--enable-pythoninterp').
+buildconfig(_,    '--enable-luainterp').
 buildconfig(_,    '--enable-multibyte').
 
 buildconfig(unix, '--enable-gui=gtk2').
