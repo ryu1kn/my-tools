@@ -10,8 +10,8 @@
 
 opt_spec([[
     opt(revision),
-    type(integer),
-    default(13107),
+    type(atom),
+    default('v8.0.1655'),
     shortflags([r]),
     longflags(['revision']),
     help(['revision to which you want your vim upgraded'])
@@ -55,10 +55,9 @@ goto_vim_dir :-
     working_directory(_, Path).
 
 update_local_repo(X) :-
-    must_be(positive_integer, X),
-    process_create(path(hg), ['pull'], []),
+    process_create(path(git), ['pull'], []),
     process_create(path(echo), ['updating to revision ', X], []),
-    process_create(path(hg), ['update', '-r', X], []).
+    process_create(path(git), ['checkout', X], []).
 
 remove_config_cache :-
     process_create(path(rm), ['-f', 'src/auto/config.cache'], []).
