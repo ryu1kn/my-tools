@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo swipl -q -p library=$PL_LIB -s $0.pl $*
-swipl -q -p library=$PL_LIB -s $0.pl $*
+echo swipl -q -p library=$PL_LIB -s $0.pl -- $*
+swipl -q -p library=$PL_LIB -s $0.pl -- $*
