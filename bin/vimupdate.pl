@@ -1,7 +1,5 @@
 % #!/usr/local/bin/swipl -q -t main,halt -s
 % vi: ft=prolog
-% OPTIONS:
-%   -r <rev>    revision
 :- use_module(library(optparse)).
 :- use_module(library(process)).
 :- use_module(library(error)).
@@ -9,12 +7,12 @@
 :- initialization(main).
 
 opt_spec([[
-    opt(revision),
-    type(atom),
-    default('v8.0.1655'),
-    shortflags([r]),
-    longflags(['revision']),
-    help(['revision to which you want your vim upgraded'])
+    opt(use_current),
+    type(boolean),
+    shortflags([c]),
+    longflags(['use-current']),
+    default(false),
+    help(['Use current repository code and do not get the latest'])
 ], [
     opt(quiet),
     type(boolean),
@@ -32,9 +30,9 @@ opt_spec([[
 main :- catch(body, E, print_message(error, E)), halt.
 
 body :-
-    getArg(revision(X)),
+    getArg(use_current(X)),
     goto_vim_dir,
-    update_local_repo(X),
+    ( X -> true ; update_local_repo),
     remove_config_cache,
     configure,
     make_install,
@@ -42,9 +40,7 @@ body :-
 
 %! @param {Term}
 getArg(Term) :-
-    % trace,
     current_prolog_flag(argv, Argv),
-    process_create(path(echo), ['Argv ', Argv], []),
     opt_spec(OptsSpec),
     opt_parse(OptsSpec, Argv, ParsedOpts, _),
     member(Term, ParsedOpts).
@@ -54,10 +50,26 @@ goto_vim_dir :-
     atomic_list_concat([HOME, repos, vim], /, Path),
     working_directory(_, Path).
 
-update_local_repo(X) :-
+update_local_repo :-
+    process_create(path(git), ['checkout', 'master'], []),
     process_create(path(git), ['pull'], []),
-    process_create(path(echo), ['updating to revision ', X], []),
-    process_create(path(git), ['checkout', X], []).
+    latest_vim_version(LatestTag),
+    process_create(path(git), ['checkout', LatestTag], []).
+
+latest_vim_version(LatestTag) :-
+    process_create(path(git), ['tag'], [stdout(pipe(Out))]),
+    read_lines(Out, Lines),
+    append(_, [LatestTag], Lines),
+    close(Out).
+
+read_lines(Out, Lines) :-
+    read_line_to_codes(Out, Line1),
+    read_lines(Line1, Out, Lines).
+read_lines(end_of_file, _, []) :- !.
+read_lines(Codes, Out, [Line|Lines]) :-
+    atom_codes(Line, Codes),
+    read_line_to_codes(Out, Line2),
+    read_lines(Line2, Out, Lines).
 
 remove_config_cache :-
     process_create(path(rm), ['-f', 'src/auto/config.cache'], []).
@@ -65,7 +77,6 @@ remove_config_cache :-
 configure :-
     machine_type(MT),
     findall(Config, buildconfig(MT, Config), Configs),
-    % process_create(path(echo), Configs, []),
     process_create(configure, Configs, []).
 
 machine_type(M) :-

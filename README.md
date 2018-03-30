@@ -14,21 +14,15 @@
 Install Vim with my favourite settings
 
 ```sh
-$ bin/vimupdate -r VERSION
+$ bin/vimupdate
 ```
 
-Where `VERSION` can be obtained from Vim repository.
+### How to install a version you want
 
-### How to pick a version
+1. Go to the vim repository directory
+1. Checkout the state that you want to build
+1. Come back here and execute the `vimupdate` command with `c` (`use_current`) flag:
 
-```sh
-$ git pull       # Fetch recent changes
-$ git tag
-v7.0
-v7.0.001
-...
-v8.0.1654
-v8.0.1655
-```
-
-Here, for example, you can pick a version `v8.0.1655`.
+    ```sh
+    $ bin/vimupdate -c
+    ```
