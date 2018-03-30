@@ -4,7 +4,7 @@
 
 ### Prerequisite
 
-* Vim repository is checked out at `$HOME/repos/vim`
+* Vim's Mercurial repository is checked out at `$HOME/repos/vim`
 * Run on unixy OS (Linux, macOS, ...)
 * Mercurial command `hg` is available
 * `make` is available

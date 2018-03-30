@@ -11,7 +11,7 @@
 opt_spec([[
     opt(revision),
     type(integer),
-    default(5667),
+    default(13107),
     shortflags([r]),
     longflags(['revision']),
     help(['revision to which you want your vim upgraded'])
@@ -42,7 +42,7 @@ body :-
 
 %! @param {Term}
 getArg(Term) :-
-    trace,
+    % trace,
     current_prolog_flag(argv, Argv),
     process_create(path(echo), ['Argv ', Argv], []),
     opt_spec(OptsSpec),
