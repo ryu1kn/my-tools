@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Purpose:
+#    Quickly record my tweets with timestamp
+#
+# Prerequisite:
+#    Environment variable TWEETLOG is set
+#
+# Usage 1:
+#    $ t I think this is great!
+# Usage 2:
+#    $ t
+#
+
+if [ x$TWEETLOG = x ] ; then
+	echo TWEETLOG hasn\'t been set propery
+	exit 1
+fi
+
+if [ x$1 = x ] ; then
+	echo -n '> '
+	read TMP
+else
+	TMP=$*
+fi
+
+echo [$(date +'%y.%m.%d %H:%M:%S')] $TMP >> $TWEETLOG
