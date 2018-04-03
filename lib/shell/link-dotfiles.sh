@@ -24,15 +24,17 @@ function link_dotfiles() {
         SOURCE=$REMOTEDIR/_$NODOTNAME
         DEST=$LOCALDIR/.$NODOTNAME
 
-        if [ -e "$DEST" -o -L "$DEST" ] ; then
+        if [ -e $DEST ] ; then
             echo -n "Replace your local $DEST with $SOURCE ? (y/n): " > /dev/stdout
             read REPLACE
             if [ x$REPLACE = xY -o x$REPLACE = xy ] ; then
                 mv -i $DEST $LOCALDIR/$NODOTNAME.bkp
                 ln -s $SOURCE $DEST
             fi
+        elif [ -L $DEST ] ; then
+            rm -i $DEST
+            ln -s $SOURCE $DEST
         else
-            #echo ln -s $SOURCE $DEST
             ln -s $SOURCE $DEST
         fi
     done

@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Obtain dotfiles to your HOME by either downloading them from
+# the remote location or creating links to the remote dotfiles
 
 FLG_LOCAL=R2L
 FLG_REMOTE=L2R
@@ -27,7 +30,7 @@ if [ x$1 = x$FLG_LOCAL ] ; then
         exit 0;
     fi
 
-    . $SHELL_LIB_DIR/copy_dotfiles.sh
+    . $SHELL_LIB_DIR/copy-dotfiles.sh
     copy_dotfiles $REMOTE_CONFIG_DIR $HOME
 
 elif [ x$1 = x$FLG_REMOTE ] ; then
@@ -38,7 +41,7 @@ elif [ x$1 = x$FLG_REMOTE ] ; then
         exit 1;
     fi
 
-    . $SHELL_LIB_DIR/link_dotfiles.sh
+    . $SHELL_LIB_DIR/link-dotfiles.sh
     link_dotfiles $REMOTE_CONFIG_DIR $HOME
 
 fi
