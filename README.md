@@ -1,3 +1,5 @@
 # My Tools
 
-* [Update Vim](./docs/vimupdate.md)
+Add `bin` to your `PATH` environment variables.
+
+* [Update Vim](./opt/vimupdate/README.md)

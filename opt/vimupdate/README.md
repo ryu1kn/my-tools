@@ -2,7 +2,7 @@
 
 Compile & install the latest Vim with my preferred settings.
 
-**NOTE:** Here file/directory paths are relative to the repository root
+**NOTE:** Here file/directory paths are relative to the **repository root**
 
 ### Prerequisite
 
@@ -10,6 +10,7 @@ Compile & install the latest Vim with my preferred settings.
 * Run on unixy OS (Linux, macOS, ...)
 * `git` is available
 * `make` is available
+* Environment variable `PL_LIB` points to a directory that has `tools.pl` script
 
 ### How to run the programme
 
