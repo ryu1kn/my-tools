@@ -11,9 +11,9 @@ require 'redcarpet'
 require 'redcarpet/render_man'
 require 'nokogiri'
 
-def html_equal(html_a, html_b)
-  assert_equal Nokogiri::HTML::DocumentFragment.parse(html_a).to_html,
-    Nokogiri::HTML::DocumentFragment.parse(html_b).to_html
+def html_equal(expected_html, actual_html)
+  assert_equal Nokogiri::HTML::DocumentFragment.parse(expected_html).to_html,
+    Nokogiri::HTML::DocumentFragment.parse(actual_html).to_html
 end
 
 class CustomRenderTest < Test::Unit::TestCase
