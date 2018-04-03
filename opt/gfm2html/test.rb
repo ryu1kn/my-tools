@@ -85,19 +85,19 @@ class CustomRenderTest < Test::Unit::TestCase
 
   def test_that_chevrons_ampersands_and_double_quotations_are_escaped_in_code_blocks
     markdown = @markdown.render("This HTML code (`<em class=\"cool\">Ruby & Rails<em>`) should be escaped.\n")
-    html_equal "<p>This HTML code (<code>&lt;em class=&quot;cool&quot;&gt;Ruby &amp; Rails&lt;em&gt;</code>) should be escaped.</p>",
+    html_equal "<p>This HTML code (<code>&lt;em class=&quot;cool&quot;&gt;Ruby &amp; Rails&lt;em&gt;</code>) should be escaped.</p>\n",
       markdown
   end
 
   def test_that_inline_code_block_can_take_language_specification
     markdown = @markdown.render("You can simply write `#!ruby p array` to print the contents of an array.\n")
-    html_equal "<p>You can simply write <code class=\"language-ruby\">p array</code> to print the contents of an array.</p>",
+    html_equal "<p>You can simply write <code class=\"language-ruby\">p array</code> to print the contents of an array.</p>\n",
       markdown
   end
 
   def test_that_code_block_can_take_language_specification
     markdown = render_with({:fenced_code_blocks => true}, "```ruby\ndef sayHello\n  puts \"Hello, World!\"\nend\n```\n")
-    html_equal "<pre class=\"prettyprint\"><code class=\"language-ruby\">def sayHello\n  puts \"Hello, World!\"\nend\n</code></pre>",
+    html_equal "<pre class=\"prettyprint\"><code class=\"language-ruby\">def sayHello\n  puts \"Hello, World!\"\nend\n</code></pre>\n",
       markdown
   end
 
