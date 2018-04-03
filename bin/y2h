@@ -1,0 +1,139 @@
+#!/usr/bin/env ruby
+#
+# !! Usage unclear, understand and write them !!
+#
+# Load yaml string into inYaml and write out html string on outHtml
+# in the output:
+#   list should be converted into <ul><li>...
+#   dictionary should be converted into <ol><li>...
+#
+# if the input is:
+#   array then it's a list
+
+# require "psych"   # Use psych as the backend of yaml library
+require "yaml"
+require "cgi"
+
+# Replace other wrapping methonds with this
+# @param {String}*n tags...
+# usage: surroundWithTags(string, "html", "body")
+#   #=> <html><body>${string}</body></html>
+def surroundWithTags(string, tagArray)
+    tagArray.reverse_each do |it|
+        string = sprintf "<%2$s>%1$s</%2$s>", string, it
+    end
+    return string
+end
+
+def convertArray(array)
+    htmlStr = ""
+    array.each do |it|
+        objStr = convertObject(it)
+        htmlStr += surroundWithTags(objStr, ["li"])
+    end
+    htmlStr = surroundWithTags(htmlStr, ["ul"])
+end
+
+def convertHash(hash)
+    htmlStr = ""
+    hash.each do |key,val|
+        keyStr = surroundWithTags(key, ["b"])
+        objStr = convertObject(val)
+        htmlStr += surroundWithTags(keyStr + ": " + objStr, ["li"])
+    end
+    htmlStr = surroundWithTags(htmlStr, ["ul"])
+end
+
+def convertString(string)
+    string.gsub(/\{\{\{(.*)\}\}\}/) do |neverUsed|
+      surroundWithTags($1, ["pre"])
+    end
+end
+
+def convertOther(something)
+    something.to_s()
+end
+
+# Call a function most suitable for the given argument
+# @param
+# @return {html}
+def convertObject(object)
+    case object
+        when Hash
+        return convertHash(object)
+        when Array
+        return convertArray(object)
+        when String
+        return convertString(object)
+        else
+        return convertOther(object)
+    end
+end
+
+def convertStreamToString(stream)
+  string = String.new()
+  stream.each do |line|
+    string += line
+  end
+  return string
+end
+
+# TODO: Rename this as it's not only used for escaping but also escaping back
+def escape(string, escapePair)
+  escapePair.each do |key, value|
+    string.gsub!(key, value)
+  end
+  return string
+end
+
+def escapeBack(string, escapePair)
+  return escape(string, escapePair.invert())
+end
+
+def convertCustomTag(string, customTag)
+  return escape(string, customTag)
+end
+
+def convertYamlDocument(stream)
+  inputString = convertStreamToString(stream)
+
+  baseEscapePair = {
+    "#" => "<[SHARP]>",
+    "{" => "<[BRACKET_O]>",
+    "}" => "<[BRACKET_C]>"
+  }
+  customEscapePair = {
+    "\:" => "<[COLON]>"
+  }
+  escapedString = escape(inputString, baseEscapePair)
+  escapedString = escape(escapedString, customEscapePair)
+  p "escaped string: #{escapedString}" if DEBUG
+
+  yamlObj = YAML.load(escapedString)
+  p "loaded YAML: #{yamlObj}" if DEBUG
+
+  outputStr = convertObject(yamlObj)
+  p "convertedHtml: #{outputStr}" if DEBUG
+
+  outputStr = escapeBack(outputStr, baseEscapePair)
+  outputStr = escapeBack(outputStr, customEscapePair)
+
+  customTag = {
+    "{{{" => "<pre>",
+    "}}}" => "</pre>"
+  }
+  outputStr = convertCustomTag(outputStr, customTag)
+end
+
+def main()
+  output = String.new()                 #=>
+  YAML.load_documents($stdin) do |doc|
+    p doc.class.name
+    output += convertYamlDocument(doc)
+  end
+  puts CGI.pretty(surroundWithTags(output, ["html", "body"]))
+end
+
+DEBUG = false
+main()
+
