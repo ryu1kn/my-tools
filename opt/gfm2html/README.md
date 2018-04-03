@@ -1,6 +1,4 @@
-# gfm2html
-
-GitHub Markdown to HTML
+# GitHub Flavored Markdown to HTML
 
 ## Setup
 
