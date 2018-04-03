@@ -1,4 +1,6 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(dirname "$0")
-swipl -q -p library=$PL_LIB -s $SCRIPT_DIR/../opt/vimupdate/main.pl -- $*
+PROLOG_LIB_DIR=$SCRIPT_DIR/../lib/prolog
+
+swipl -q -p library=$PROLOG_LIB_DIR -s $SCRIPT_DIR/../opt/vimupdate/main.pl -- $*
