@@ -1,29 +1,22 @@
 #!/bin/bash
 # Copy dotfiles from backup location to your HOME
 
-if [ x$REMOTE_CONFIG_DIR = x ] ; then
-    echo Environment variable REMOTE_CONFIG_DIR must be set
-    exit 1
-fi
+set -euo pipefail
 
-REMOTEDIR=$REMOTE_CONFIG_DIR
-LOCALDIR=$HOME
-
-for ITEM in $REMOTEDIR/_*
-do
+for ITEM in $REMOTE_CONFIG_DIR/_* ; do
     CONFFILE=`basename $ITEM`
-    NODOTNAME=`echo $CONFFILE | sed -e 's/^_//'`
+    NODOTNAME=${CONFFILE#_}
 
-    SOURCE=$REMOTEDIR/_$NODOTNAME
-    DEST=$LOCALDIR/.$NODOTNAME
+    SOURCE=$REMOTE_CONFIG_DIR/_$NODOTNAME
+    DEST=$HOME/.$NODOTNAME
 
-    if [ -e "$DEST" -o -L "$DEST" ] ; then
-        echo -n "Replace your local $DEST with $SOURCE ? (y/n): " > /dev/stdout
+    if [[ -e $DEST ]] || [[ -L $DEST ]] ; then
+        echo -n "Replace your local $DEST with $SOURCE ? (y/n): "
         read REPLACE
-        if [ x$REPLACE = xY -o x$REPLACE = xy ] ; then
-            mv -i $DEST $LOCALDIR/$NODOTNAME.bkp
-            cp -r $SOURCE $DEST
-        fi
+        [[ $REPLACE != Y ]] && [[ $REPLACE != y ]] && continue
+
+        mv -i $DEST $HOME/$NODOTNAME.bkp
+        cp -r $SOURCE $DEST
     # else    # if $DEST doesn't exist, $SOURCE wouldn't be needed to local
     #     cp $SOURCE $DEST
     fi

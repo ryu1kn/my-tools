@@ -1,33 +1,23 @@
 #!/bin/bash
 # Create dotfiles as symlinks that point backup/source dotfiles
 
-if [ x$REMOTE_CONFIG_DIR = x ] ; then
-    echo Environment variable REMOTE_CONFIG_DIR must be set
-    exit 1
-fi
+set -euo pipefail
 
-REMOTEDIR=$REMOTE_CONFIG_DIR
-LOCALDIR=$HOME
-
-for ITEM in $REMOTEDIR/_*
-do
+for ITEM in $REMOTE_CONFIG_DIR/_* ; do
     CONFFILE=`basename $ITEM`
-    NODOTNAME=`echo $CONFFILE | sed -e 's/^_//'`
+    NODOTNAME=${CONFFILE#_}
 
-    SOURCE=$REMOTEDIR/_$NODOTNAME
-    DEST=$LOCALDIR/.$NODOTNAME
+    SOURCE=$REMOTE_CONFIG_DIR/_$NODOTNAME
+    DEST=$HOME/.$NODOTNAME
 
-    if [ -e $DEST ] ; then
+    if [[ -e $DEST ]] ; then
         echo -n "Replace your local $DEST with $SOURCE ? (y/n): "
         read REPLACE
-        if [ x$REPLACE = xY -o x$REPLACE = xy ] ; then
-            mv -i $DEST $LOCALDIR/$NODOTNAME.bkp
-            ln -s $SOURCE $DEST
-        fi
-    elif [ -L $DEST ] ; then
+        [[ $REPLACE != Y ]] && [[ $REPLACE != y ]] && continue
+
+        mv -i $DEST $HOME/$NODOTNAME.bkp
+    elif [[ -L $DEST ]] ; then
         rm -i $DEST
-        ln -s $SOURCE $DEST
-    else
-        ln -s $SOURCE $DEST
     fi
+    ln -s $SOURCE $DEST
 done
