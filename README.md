@@ -6,5 +6,5 @@ Add `bin` to your `PATH` environment variables.
 * [Update Vim](./opt/vimupdate/README.md)
 * [Tweet](./bin/t)
 * [YAML to HTML](./bin/y2h)
-* [Copy dotfiles](./bin/copy-dotfiles.sh)
+* [Grab dotfiles](./bin/grab-dotfiles.sh)
 * [Link dotfiles](./bin/link-dotfiles.sh)
