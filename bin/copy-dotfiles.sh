@@ -17,7 +17,7 @@ for ITEM in $REMOTE_CONFIG_DIR/_* ; do
 
         mv -i $DEST $HOME/$NODOTNAME.bkp
         cp -r $SOURCE $DEST
-    # else    # if $DEST doesn't exist, $SOURCE wouldn't be needed to local
-    #     cp $SOURCE $DEST
+    else
+        cp -r $SOURCE $DEST
     fi
 done
