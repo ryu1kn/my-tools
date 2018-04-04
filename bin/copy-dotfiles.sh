@@ -10,14 +10,14 @@ for ITEM in $REMOTE_CONFIG_DIR/_* ; do
     SOURCE=$REMOTE_CONFIG_DIR/_$NODOTNAME
     DEST=$HOME/.$NODOTNAME
 
-    if [[ -e $DEST ]] || [[ -L $DEST ]] ; then
+    if [[ -e $DEST ]] ; then
         echo -n "Replace your local $DEST with $SOURCE ? (y/n): "
         read REPLACE
         [[ $REPLACE != Y ]] && [[ $REPLACE != y ]] && continue
 
         mv -i $DEST $HOME/$NODOTNAME.bkp
-        cp -r $SOURCE $DEST
-    else
-        cp -r $SOURCE $DEST
+    elif [[ -L $DEST ]] ; then
+        rm -f $DEST
     fi
+    cp -r $SOURCE $DEST
 done

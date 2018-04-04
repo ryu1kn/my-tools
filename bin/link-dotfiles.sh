@@ -17,7 +17,7 @@ for ITEM in $REMOTE_CONFIG_DIR/_* ; do
 
         mv -i $DEST $HOME/$NODOTNAME.bkp
     elif [[ -L $DEST ]] ; then
-        rm -i $DEST
+        rm -f $DEST
     fi
     ln -s $SOURCE $DEST
 done
