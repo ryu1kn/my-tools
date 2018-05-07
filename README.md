@@ -11,3 +11,4 @@ Add `bin` to your `PATH` environment variable and all tools become available.
 * [Tweet](./bin/t)
 * [Grab dotfiles](./bin/grab-dotfiles.sh)
 * [Link dotfiles](./bin/link-dotfiles.sh)
+* [Copy Home](./bin/copy-home.sh)
