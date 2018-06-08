@@ -12,3 +12,4 @@ Add `bin` to your `PATH` environment variable and all tools become available.
 * [Grab dotfiles](./bin/grab-dotfiles.sh)
 * [Link dotfiles](./bin/link-dotfiles.sh)
 * [Copy Home](./bin/copy-home.sh)
+* [JWT Token Decoder](./opt/jwt-decoder/README.md)

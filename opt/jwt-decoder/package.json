@@ -1,0 +1,10 @@
+{
+  "name": "jwt-decoder",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "jwt-decode": "^2.2.0"
+  }
+}
