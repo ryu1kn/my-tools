@@ -12,7 +12,6 @@ Compile & install the latest Vim with my preferred settings.
 * `make` is available
 * `swipl` is available
 * On Ubuntu, `libxt-dev` needs to be installed
-* Environment variable `PL_LIB` points to a directory that has `tools.pl` script
 
 ### How to run the programme
 
