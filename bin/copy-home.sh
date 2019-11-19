@@ -1,7 +1,17 @@
 #!/bin/bash
-# Set `SOURCE` to the old HOME dir and run this script
 
 set -euo pipefail
+
+usage() {
+    cat <<EOF
+
+    Usage: $0 [-h] <old_home_path>
+
+    -h      This info
+EOF
+}
+
+for arg in "$@" ; do [[ $arg = -h ]] && { usage; exit 0; } ; done
 
 stubbed_cmds=(rm cp)
 
@@ -13,13 +23,13 @@ stubbed_cmds=(rm cp)
 for cmd in "${stubbed_cmds[@]}" ; do readonly "C_$cmd=${stub_prefix:-}$cmd"; done
 readonly C_echo="${echo_prefix:-}echo"
 
-# SOURCE=/media/oldhd/username
-TARGET=$HOME
+old_home=$1
+new_home=$HOME
 
 function replace_file () {
     local filename=$1
-    local sourcefile=$SOURCE/$filename
-    local targetfile=$TARGET/$filename
+    local sourcefile=$old_home/$filename
+    local targetfile=$new_home/$filename
 
     if [[ -e $targetfile ]] ; then
         $C_echo "Removing $targetfile..."
@@ -29,7 +39,7 @@ function replace_file () {
     $C_cp -r --preserve "$sourcefile" "$targetfile"
 }
 
-for file in "$SOURCE"/* "$SOURCE"/.* ; do
+for file in "$old_home"/* "$old_home"/.* ; do
     filename=$(basename "$file")
     [[ $filename != '..' ]] && [[ $filename != '.' ]] && replace_file "$filename"
 done
