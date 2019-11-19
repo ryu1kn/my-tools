@@ -12,16 +12,16 @@ function replace_file () {
   local targetfile=$TARGET/$filename
 
   if [[ -e $TARGET/$filename ]] ; then
-    echo Removing $targetfile...
-    rm -rf $targetfile
+    echo "Removing $targetfile..."
+    rm -rf "$targetfile"
   fi
-  echo Copying $sourcefile to $targetfile...
-  cp -r --preserve $sourcefile $targetfile
+  echo "Copying $sourcefile to $targetfile..."
+  cp -r --preserve "$sourcefile" "$targetfile"
 }
 
-for FILE in $SOURCE/* $SOURCE/.* ; do
-  FILENAME=$(basename $FILE)
+for FILE in "$SOURCE"/* "$SOURCE"/.* ; do
+  FILENAME=$(basename "$FILE")
   if [[ $FILENAME != '..' ]] && [[ $FILENAME != '.' ]] ; then
-    replace_file $FILENAME
+    replace_file "$FILENAME"
   fi
 done

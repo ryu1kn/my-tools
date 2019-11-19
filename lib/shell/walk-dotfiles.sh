@@ -5,8 +5,8 @@ set -euo pipefail
 
 COMMAND=${1:-echo}
 
-for ITEM in $REMOTE_CONFIG_DIR/_* ; do
-    CONFFILE=`basename $ITEM`
+for ITEM in "$REMOTE_CONFIG_DIR"/_* ; do
+    CONFFILE=$(basename "$ITEM")
     NODOTNAME=${CONFFILE#_}
 
     SOURCE=$REMOTE_CONFIG_DIR/_$NODOTNAME
@@ -14,13 +14,13 @@ for ITEM in $REMOTE_CONFIG_DIR/_* ; do
 
     if [[ -e $DEST ]] ; then
         echo -n "Replace your local $DEST with $SOURCE ? (y/n): "
-        read REPLACE
+        read -r REPLACE
         [[ $REPLACE != Y ]] && [[ $REPLACE != y ]] && continue
 
-        mv -i $DEST $HOME/$NODOTNAME.bkp
+        mv -i "$DEST" "$HOME/$NODOTNAME.bkp"
     elif [[ -L $DEST ]] ; then
-        rm -f $DEST
+        rm -f "$DEST"
     fi
 
-    $COMMAND $SOURCE $DEST
+    $COMMAND "$SOURCE" "$DEST"
 done
