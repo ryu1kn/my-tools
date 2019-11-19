@@ -17,21 +17,19 @@ readonly C_echo="${echo_prefix:-}echo"
 TARGET=$HOME
 
 function replace_file () {
-  local filename=$1
-  local sourcefile=$SOURCE/$filename
-  local targetfile=$TARGET/$filename
+    local filename=$1
+    local sourcefile=$SOURCE/$filename
+    local targetfile=$TARGET/$filename
 
-  if [[ -e $TARGET/$filename ]] ; then
-    $C_echo "Removing $targetfile..."
-    $C_rm -rf "$targetfile"
-  fi
-  $C_echo "Copying $sourcefile to $targetfile..."
-  $C_cp -r --preserve "$sourcefile" "$targetfile"
+    if [[ -e $targetfile ]] ; then
+        $C_echo "Removing $targetfile..."
+        $C_rm -rf "$targetfile"
+    fi
+    $C_echo "Copying $sourcefile to $targetfile..."
+    $C_cp -r --preserve "$sourcefile" "$targetfile"
 }
 
-for FILE in "$SOURCE"/* "$SOURCE"/.* ; do
-  FILENAME=$(basename "$FILE")
-  if [[ $FILENAME != '..' ]] && [[ $FILENAME != '.' ]] ; then
-    replace_file "$FILENAME"
-  fi
+for file in "$SOURCE"/* "$SOURCE"/.* ; do
+    filename=$(basename "$file")
+    [[ $filename != '..' ]] && [[ $filename != '.' ]] && replace_file "$filename"
 done
