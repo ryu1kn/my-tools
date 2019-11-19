@@ -1,7 +1,17 @@
 #!/bin/bash
 # Set `SOURCE` to the old HOME dir and run this script
 
-set -u
+set -euo pipefail
+
+stubbed_cmds=(rm cp)
+
+[[ ${TEST:-} = true ]] && {
+    stub_prefix='echo '
+    echo_prefix=': '
+}
+
+for cmd in "${stubbed_cmds[@]}" ; do readonly "C_$cmd=${stub_prefix:-}$cmd"; done
+readonly C_echo="${echo_prefix:-}echo"
 
 # SOURCE=/media/oldhd/username
 TARGET=$HOME
@@ -12,11 +22,11 @@ function replace_file () {
   local targetfile=$TARGET/$filename
 
   if [[ -e $TARGET/$filename ]] ; then
-    echo "Removing $targetfile..."
-    rm -rf "$targetfile"
+    $C_echo "Removing $targetfile..."
+    $C_rm -rf "$targetfile"
   fi
-  echo "Copying $sourcefile to $targetfile..."
-  cp -r --preserve "$sourcefile" "$targetfile"
+  $C_echo "Copying $sourcefile to $targetfile..."
+  $C_cp -r --preserve "$sourcefile" "$targetfile"
 }
 
 for FILE in "$SOURCE"/* "$SOURCE"/.* ; do
