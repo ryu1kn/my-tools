@@ -5,7 +5,7 @@ set -euo pipefail
 usage() {
     cat <<EOF
 
-    Usage: $0 [-h] <old_home_path>
+    Usage: ${0##*/} [-h] <old_home_path> <new_home_path>
 
     -h      This info
 EOF
@@ -24,7 +24,7 @@ for cmd in "${stubbed_cmds[@]}" ; do readonly "C_$cmd=${stub_prefix:-}$cmd"; don
 readonly C_echo="${echo_prefix:-}echo"
 
 old_home=$1
-new_home=$HOME
+new_home=$2
 
 function replace_file () {
     local filename=$1
