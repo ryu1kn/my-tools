@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+source "$(dirname $0)/commands.sh"
+
 usage() {
     cat <<EOF
 
@@ -13,16 +15,6 @@ EOF
 
 for arg in "$@" ; do [[ $arg = -h ]] && { usage; exit 0; } ; done
 
-stubbed_cmds=(rm cp)
-
-[[ ${TEST:-} = true ]] && {
-    stub_prefix='echo '
-    echo_prefix=': '
-}
-
-for cmd in "${stubbed_cmds[@]}" ; do readonly "C_$cmd=${stub_prefix:-}$cmd"; done
-readonly C_echo="${echo_prefix:-}echo"
-
 old_home=$1
 new_home=$2
 
@@ -32,11 +24,11 @@ function replace_file () {
     local targetfile=$new_home/$filename
 
     if [[ -e $targetfile ]] ; then
-        $C_echo "Removing $targetfile..."
-        $C_rm -rf "$targetfile"
+        $ECHO "Removing $targetfile..."
+        $RM -rf "$targetfile"
     fi
-    $C_echo "Copying $sourcefile to $targetfile..."
-    $C_cp -r --preserve "$sourcefile" "$targetfile"
+    $ECHO "Copying $sourcefile to $targetfile..."
+    $CP -r --preserve "$sourcefile" "$targetfile"
 }
 
 for file in "$old_home"/* "$old_home"/.* ; do
