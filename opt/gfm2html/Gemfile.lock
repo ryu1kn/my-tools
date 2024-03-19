@@ -1,12 +1,12 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    mini_portile2 (2.8.1)
-    nokogiri (1.14.3)
-      mini_portile2 (~> 2.8.0)
+    mini_portile2 (2.8.5)
+    nokogiri (1.15.6)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     power_assert (1.1.1)
-    racc (1.6.2)
+    racc (1.7.3)
     redcarpet (3.5.1)
     test-unit (3.2.7)
       power_assert
